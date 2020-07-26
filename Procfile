@@ -1,1 +1,1 @@
-app: python slacki.py --log-file -
+web: gunicorn app:app
