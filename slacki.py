@@ -12,11 +12,6 @@ slackify = Slackify(app=app)
 cli = Slack(os.getenv('SLACK_API_TOKEN'))
 
 
-@app.route("/")
-def home_view():
-        return "<h1>App is working</h1>"
-
-
 @slackify.command
 def hello():
     """Send hello message with question and yes no buttons"""
