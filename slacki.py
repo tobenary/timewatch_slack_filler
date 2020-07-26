@@ -12,6 +12,11 @@ slackify = Slackify(app=app)
 cli = Slack(os.getenv('SLACK_API_TOKEN'))
 
 
+@app.route("/")
+def home_view():
+        return "<h1>App is working</h1>"
+
+
 @slackify.command
 def hello():
     """Send hello message with question and yes no buttons"""
@@ -200,3 +205,7 @@ def echo_reaction(payload):
 def say_hi(payload):
     event = payload['event']
     cli.chat_postMessage(channel=event['channel'], text='Hi! 👋')
+
+
+if __name__ == "__main__":
+        app.run()
