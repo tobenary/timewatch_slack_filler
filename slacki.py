@@ -164,7 +164,8 @@ def register_callback(payload):
     # text = f"{payload['view']['state']['values']['username_block']['username_value']['value']}, {payload['view']['state']['values']['password_block']['password_value']['value']}"
     # cli.chat_postMessage(channel=payload['user']['id'], text=text)
     print(f"main_time.py 2391 {payload['view']['state']['values']['username_block']['username_value']['value']} {payload['view']['state']['values']['password_block']['password_value']['value']}")
-    os.system(f"main_time.py 2391 {payload['view']['state']['values']['username_block']['username_value']['value']} {payload['view']['state']['values']['password_block']['password_value']['value']}")
+    # os.system(f"main_time.py 2391 {payload['view']['state']['values']['username_block']['username_value']['value']} {payload['view']['state']['values']['password_block']['password_value']['value']}")
+    print(os.listdir())
     text = "*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."
     time.sleep(5)
     cli.chat_postMessage(channel=payload['user']['id'], text=text)
