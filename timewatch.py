@@ -71,7 +71,8 @@ class TimeWatch:
         data = {'comp': company, 'name': user, 'pw': password}
         r = self.post(self.loginpath, data, headers = None)
         if not ("שם החברה" and "שם העובד") in r.text: # if "The login details you entered are incorrect!" in r.text:
-            raise TimeWatchException("Login failed!")
+            # raise TimeWatchException("Login failed!")
+            return "Login failed!"
         self.loggedin = True
         self.company = company
         self.user = user
@@ -367,3 +368,4 @@ class TimeWatch:
             start=(date_durations[date][1][0], date_durations[date][1][1])
             start = self.tuple_to_str(start)
             self.edit_date(year, month, date, date_durations, start)
+        return "Check your times"
