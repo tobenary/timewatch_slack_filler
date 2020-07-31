@@ -171,8 +171,8 @@ def register_callback(payload):
     print('**' + tw_return + '**')
     text = "*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."
     time.sleep(7)
-    send_message(cli, channel=payload['user']['id'], text=text)
-    send_message(cli, channel=payload['user']['id'], text=tw_return)
+    send_message(cli, channel=payload['user']['id'], blocks=text)
+    send_message(cli, channel=payload['user']['id'], blocks=tw_return)
     # cli.chat_postMessage(channel=payload['user']['id'], text=text)
     # cli.chat_postMessage(channel=payload['user']['id'], text=tw_return)
 
