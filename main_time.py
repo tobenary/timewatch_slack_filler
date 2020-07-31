@@ -26,7 +26,7 @@ def some_func(username, password, company):
     starttime = '09:00'
     daysoff = ['friday', 'saturday']
     jitter = 10
-    retries = 5
+    retries = 2
 
 
     #  parser.add_argument('-y', '--year', default=today.year, type=int, help='Year number to fill')
@@ -68,7 +68,6 @@ def some_func(username, password, company):
     # login = tw.login(args.company, args.user, args.password)
     login = tw.login(company, username, password)
     if login == "Login failed!":
-        print(login)
         return login
     else:
         text = tw.edit_month(year, month)
