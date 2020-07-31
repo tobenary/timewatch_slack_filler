@@ -69,7 +69,6 @@ class TimeWatch:
         password - password as filled by user when logging in
         employeeid - id as internally represented by website after successful login"""
         data = {'comp': company, 'name': user, 'pw': password}
-        print(data)
         r = self.post(self.loginpath, data, headers = None)
         if not ("שם החברה" and "שם העובד") in r.text: # if "The login details you entered are incorrect!" in r.text:
             # raise TimeWatchException("Login failed!")
@@ -332,6 +331,8 @@ class TimeWatch:
 
     def edit_month(self, year, month):
         month = self.month_number(month)
+        print(month)
+        print(self.override)
 
         if self.override == 'all':
             # in override=all mode, make sure all times are cleaned
