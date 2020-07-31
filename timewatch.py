@@ -69,6 +69,7 @@ class TimeWatch:
         password - password as filled by user when logging in
         employeeid - id as internally represented by website after successful login"""
         data = {'comp': company, 'name': user, 'pw': password}
+        print(data)
         r = self.post(self.loginpath, data, headers = None)
         if not ("שם החברה" and "שם העובד") in r.text: # if "The login details you entered are incorrect!" in r.text:
             # raise TimeWatchException("Login failed!")
