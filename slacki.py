@@ -169,7 +169,7 @@ def register_callback(payload):
     password = payload['view']['state']['values']['password_block']['password_value']['value']
     subprocess.call(['python', 'main_time.py', '2391', username, password])
     text = "*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."
-    time.sleep(5)
+    time.sleep(7)
     cli.chat_postMessage(channel=payload['user']['id'], text=text)
 
     return ACK
