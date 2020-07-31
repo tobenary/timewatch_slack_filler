@@ -10,7 +10,7 @@ import logging
 import timewatch
 
 
-def some_func(username, password, company):
+def some_func(company, username, password):
 
     #  parser = argparse.ArgumentParser(description='Automatic work hours reporting for timewatch.co.il')
     #
