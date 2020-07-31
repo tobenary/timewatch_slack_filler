@@ -20,7 +20,7 @@ def some_func(username, password, company):
 
     today = datetime.date.today()
     year = today.year
-    month = today.month
+    month = today.month + 1
     verbose = 0
     override = 'incomplete'
     starttime = '09:00'
