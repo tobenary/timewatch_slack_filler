@@ -1,11 +1,10 @@
-import os
-import random
-import time
-import subprocess
-import main_time
 from flask import Flask
-from slackify import (ACK, OK, Slackify, async_task, block_reply, request,
-                      respond, text_block, Slack)
+from slackify import Slackify, request, text_block, Slack, ACK, OK, block_reply, respond
+import os
+import json
+import main_time
+from slackify.tasks import async_task
+
 
 app = Flask(__name__)
 slackify = Slackify(app=app)
@@ -109,7 +108,9 @@ def fill_time():
             "type": "section",
             "text": {
                 "type": "plain_text",
-                "text": "The application is reporting automatic hours for timewatch.co.il.\nCurrently, it check and fills the incomplete data for working days.\nThe default start time is 9am, and the duration is ~9:05",
+                "text": "The application is reporting automatic hours for timewatch.co.il.\n"
+                        "Currently, it check and fills the incomplete data for working days.\n"
+                        "The default start time is 9am, and the duration is ~9:05",
                 "emoji": True
             }
         },
@@ -119,7 +120,10 @@ def fill_time():
             "type": "section",
             "text": {
                 "type": "plain_text",
-                "text": "1. Before submitting the form, please fill your missing dates (if any)\n2. After exectution, I'm obligated to check the output in the UI.\n3. I will verify that all the data is accurate.",
+                "text": "1. Before submitting the form, please fill your missing dates (if any)\n"
+                        "2. After exectution, I'm obligated to check the output in the UI.\n"
+                        "3. I am responsible to verify that all the data is accurate"
+                        " *after* I click *Fill Missing Times*.",
                 "emoji": True
             }
         }
@@ -155,26 +159,15 @@ def fill_time():
 
 
 @slackify.view("registration_form")
-def register_callback(payload):
+def register_callback():
     """Handle registration form submission."""
-    # response = payload['view']['state']['values']
-    # text_blok = text_block(f':heavy_check_mark: You are now registered.\nForm payload:\n```{response}```')
-    # send_message(cli, [text_blok], payload['user']['id'])
-    # send_message(cli, text_block('hiiiii'), payload['user']['id'])
-    # text = f"{payload['view']['state']['values']['username_block']['username_value']['value']}, {payload['view']['state']['values']['password_block']['password_value']['value']}"
-    # cli.chat_postMessage(channel=payload['user']['id'], text=text)
-    # print(f"main_time.py 2391 {payload['view']['state']['values']['username_block']['username_value']['value']} {payload['view']['state']['values']['password_block']['password_value']['value']}")
-    # os.system(f"main_time.py 2391 {payload['view']['state']['values']['username_block']['username_value']['value']} {payload['view']['state']['values']['password_block']['password_value']['value']}")
-    username = payload['view']['state']['values']['username_block']['username_value']['value']
-    password = payload['view']['state']['values']['password_block']['password_value']['value']
-    # tw_return = main_time.some_func('2391', username, password)
-    # print('**' + tw_return + '**')
-    text = "*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."
-    time.sleep(7)
-    send_message(cli, channel=payload['user']['id'], blocks=text)
-    # send_message(cli, channel=payload['user']['id'], blocks=tw_return)
-    # cli.chat_postMessage(channel=payload['user']['id'], text=text)
-    # cli.chat_postMessage(channel=payload['user']['id'], text=tw_return)
+    action = json.loads(request.form["payload"])
+    response = action['view']['state']['values']
+    login_to_timewatch(response, action)
+    # Notify user that we are handling the command, also without blocking
+    text = "Your task was received and is being processed...\n" \
+           "*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."
+    send_message(cli, channel=action['user']['id'], blocks=text)
 
     return ACK
 
@@ -183,33 +176,13 @@ def register_callback(payload):
 def send_message(cli, blocks, user_id):
     return cli.chat_postMessage(channel=user_id, user_id=user_id, blocks=blocks)
 
-
-@slackify.shortcut('dice_roll')
-def dice_roll(payload):
-    """Roll a virtual dice to give a pseudo-random number"""
-    dice_value = random.randint(1, 6)
-    msg = f'🎲 {dice_value}'
-    send_message(cli, blocks=[text_block(msg)], user_id=payload['user']['id'])
-    return ACK
-
-
-@slackify.event('reaction_added')
-def echo_reaction(payload):
-    """If any user reacts to a message, also react with that emoji to the message"""
-    event = payload['event']
-    reaction = event['reaction']
-    cli.reactions_add(
-        name=reaction,
-        channel=event['item']['channel'],
-        timestamp=event['item']['ts']
-    )
-
-
-@slackify.message('hello')
-def say_hi(payload):
-    event = payload['event']
-    cli.chat_postMessage(channel=event['channel'], text='Hi! 👋')
+@async_task
+def login_to_timewatch(response, action):
+    username = response['username_block']['username_value']['value']
+    password = response['values']['password_block']['password_value']['value']
+    tw_return = main_time.some_func('2391', username, password)
+    cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
 
 
 if __name__ == "__main__":
-        app.run()
+    app.run()
