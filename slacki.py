@@ -121,9 +121,8 @@ def fill_time():
             "text": {
                 "type": "plain_text",
                 "text": "1. Before submitting the form, please fill your missing dates (if any)\n"
-                        "2. After exectution, I'm obligated to check the output in the UI.\n"
-                        "3. I am responsible to verify that all the data is accurate"
-                        " *after* I click *Fill Missing Times*.",
+                        "2. After execution, I'm obligated to check the output in the timewatch site.\n"
+                        "3. I am responsible to verify that all the data is accurate AFTER I click Fill Missing Times.",
                 "emoji": True
             }
         }
@@ -135,7 +134,7 @@ def fill_time():
         "callback_id": callback_id,
         "title": {
             "type": "plain_text",
-            "text": "Time Watch auto filler",
+            "text": "Timewatch site auto-filler",
             "emoji": True
         },
         "submit": {
@@ -163,14 +162,11 @@ def register_callback():
     """Handle registration form submission."""
     action = json.loads(request.form["payload"])
     response = action['view']['state']['values']
-    print("redirecting to timewatch")
+    print("redirecting to timewatch script")
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
-    text = """Your task was received and is being processed...\n
-    *MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."""
-    print("sending msg to user")
-    print(text)
-    # send_message(cli, text, action['user']['id'])
+    text = """Your task was received and is being processed...
+*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch site> and check me."""
     cli.chat_postMessage(channel=action['user']['id'], text=text)
 
     return ACK
