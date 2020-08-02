@@ -169,7 +169,9 @@ def register_callback():
     text = """Your task was received and is being processed...\n
     *MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."""
     print("sending msg to user")
-    send_message(cli, text, action['user']['id'])
+    print(text)
+    # send_message(cli, text, action['user']['id'])
+    cli.chat_postMessage(channel=action['user']['id'], text=text)
 
     return ACK
 
