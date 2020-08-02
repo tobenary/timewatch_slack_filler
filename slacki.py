@@ -162,11 +162,15 @@ def fill_time():
 def register_callback():
     """Handle registration form submission."""
     action = json.loads(request.form["payload"])
+    print(action)
     response = action['view']['state']['values']
+    print(response)
+    print("redirecting to timewhatch")
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
     text = "Your task was received and is being processed...\n" \
            "*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."
+    print("sending msg to user")
     send_message(cli, channel=action['user']['id'], blocks=text)
 
     return ACK
@@ -180,6 +184,7 @@ def send_message(cli, blocks, user_id):
 def login_to_timewatch(response, action):
     username = response['username_block']['username_value']['value']
     password = response['values']['password_block']['password_value']['value']
+    print(username, password, action)
     tw_return = main_time.some_func('2391', username, password)
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
 
