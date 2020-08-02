@@ -162,10 +162,8 @@ def fill_time():
 def register_callback():
     """Handle registration form submission."""
     action = json.loads(request.form["payload"])
-    print("***" * 3, action)
     response = action['view']['state']['values']
-    print("***" * 3, response)
-    print("redirecting to timewhatch")
+    print("redirecting to timewatch")
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
     text = "Your task was received and is being processed...\n" \
@@ -184,12 +182,11 @@ def send_message(cli, blocks, user_id):
 @async_task
 def login_to_timewatch(response, action):
     username = response['username_block']['username_value']['value']
-    password = response['values']['password_block']['password_value']['value']
     print("Username: ", username)
+    password = response['password_block']['password_value']['value']
     print("Password: ", password)
-    print("Action: ", action)
     # tw_return = main_time.some_func('2391', username, password)
-    tw_return = "OK"
+    tw_return = "OK, fine"
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
 
 
