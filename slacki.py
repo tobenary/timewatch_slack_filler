@@ -166,11 +166,10 @@ def register_callback():
     print("redirecting to timewatch")
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
-    # text = """Your task was received and is being processed...\n
-    # *MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."""
-    text = "Your task was received and is being processed..."
+    text = """Your task was received and is being processed...\n
+    *MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch> and check me."""
     print("sending msg to user")
-    send_message(cli, channel=action['user']['id'], blocks=text)
+    send_message(cli, text, action['user']['id'])
 
     return ACK
 
