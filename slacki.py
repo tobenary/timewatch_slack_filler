@@ -188,7 +188,8 @@ def login_to_timewatch(response, action):
     print("Username: ", username)
     print("Password: ", password)
     print("Action: ", action)
-    tw_return = main_time.some_func('2391', username, password)
+    # tw_return = main_time.some_func('2391', username, password)
+    tw_return = "OK"
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
 
 
