@@ -134,7 +134,7 @@ def fill_time():
         "callback_id": callback_id,
         "title": {
             "type": "plain_text",
-            "text": "Timewatch site auto-filler",
+            "text": "Timewatch site auto filler",
             "emoji": True
         },
         "submit": {
@@ -166,7 +166,7 @@ def register_callback():
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
     text = """Your task was received and is being processed...
-*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch site> and check me."""
+*MANDATORY* - login to <checkin.timewatch.co.il/punch/punch2.php|timewatch_site> and check me."""
     cli.chat_postMessage(channel=action['user']['id'], text=text)
 
     return ACK
