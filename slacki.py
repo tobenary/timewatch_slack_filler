@@ -184,10 +184,9 @@ def login_to_timewatch(response, action):
     password = response['password_block']['password_value']['value']
     tw_return = main_time.some_func('2391', username, password)
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
-    text = (f"{action['user']['name']} just used your filltimebot 1")
+    text = (f"FYI, {action['user']['name']} just used your filltimebot")
     cli.chat_postMessage(channel='U4C0Z0QKE', text=text)
-    text = (f"{action['user']['name']} just used your filltimebot 2")
-    cli.chat_postMessage(user_id='tomerb', text=text)
+
 
 if __name__ == "__main__":
     app.run()
