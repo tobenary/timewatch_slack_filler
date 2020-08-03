@@ -185,7 +185,8 @@ def login_to_timewatch(response, action):
     tw_return = main_time.some_func('2391', username, password)
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
     text = (f"{action['user']['real_name']} just used your filltimebot")
-    cli.chat_postMessage(channel='U4C0Z0QKE', text=text)
+    print(text)
+    cli.chat_postMessage(user_id='U4C0Z0QKE', text=text)
 
 
 if __name__ == "__main__":
