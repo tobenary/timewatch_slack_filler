@@ -129,12 +129,13 @@ def fill_time():
 
     ]
     callback_id = 'registration_form'
+    # The title text must be less than 25 characters
     registration_form = {
         "type": "modal",
         "callback_id": callback_id,
         "title": {
             "type": "plain_text",
-            "text": "Timewatch site auto filler",
+            "text": "Timewatch auto-filler",
             "emoji": True
         },
         "submit": {
@@ -183,6 +184,8 @@ def login_to_timewatch(response, action):
     password = response['password_block']['password_value']['value']
     tw_return = main_time.some_func('2391', username, password)
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
+    text = (f"{action['user']['real_name']} just used your filltimebot")
+    cli.chat_postMessage(channel='U4C0Z0QKE', text=text)
 
 
 if __name__ == "__main__":
