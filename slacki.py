@@ -76,7 +76,7 @@ def fill_time():
             "type": "plain_text_input",
             "placeholder": {
                 "type": "plain_text",
-                "text": "Enter your employee number - usually 3 digits"
+                "text": "Enter your employee number"
             },
             "action_id": "username_value"
         },
@@ -120,8 +120,8 @@ def fill_time():
             "type": "section",
             "text": {
                 "type": "plain_text",
-                "text": "1. BEFORE submitting the form, please fill your sick or vacation dates (if any)\n"
-                        "2. AFTER execution, I'm obligated to check the output in the timewatch site.\n"
+                "text": "1. Before submitting the form, please fill your vacation or sick dates (if any)\n"
+                        "2. After execution, I'm obligated to check the output in the timewatch site.\n"
                         "3. I am responsible to verify that all the data is accurate AFTER I click Fill Missing Times.",
                 "emoji": True
             }
