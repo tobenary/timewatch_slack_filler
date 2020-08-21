@@ -30,7 +30,7 @@ class TimeWatch:
 
         self.offdays = ['friday', 'saturday']
         self.override = 'incomplete'
-        self.jitter = 0
+        self.jitter = 20
         self.starttime = '09:00'
         self.duration = '9:35'
         self.retries = 5
@@ -331,8 +331,8 @@ class TimeWatch:
 
     def edit_month(self, year, month):
         month = self.month_number(month)
-        print(month)
-        print(self.override)
+        print(f"the month is {month}")
+        print(f" the override set to {self.override}")
 
         if self.override == 'all':
             # in override=all mode, make sure all times are cleaned
