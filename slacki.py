@@ -76,7 +76,7 @@ def fill_time():
             "type": "plain_text_input",
             "placeholder": {
                 "type": "plain_text",
-                "text": "Enter your employee number"
+                "text": "Enter your employee number (usually 3 digits)"
             },
             "action_id": "username_value"
         },

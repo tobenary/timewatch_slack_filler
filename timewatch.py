@@ -370,4 +370,5 @@ class TimeWatch:
             start=(date_durations[date][1][0], date_durations[date][1][1])
             start = self.tuple_to_str(start)
             self.edit_date(year, month, date, date_durations, start)
+            print(f"Done punching for {date}, moving on...")
         return "Check your times"
