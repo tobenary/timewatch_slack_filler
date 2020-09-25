@@ -371,4 +371,5 @@ class TimeWatch:
             start = self.tuple_to_str(start)
             self.edit_date(year, month, date, date_durations, start)
             print(f"Done punching for {date}, moving on...")
-        return "Check your times"
+        return """Timewatch site updated - Check your times!
+        *MANDATORY* - login to <https://checkin.timewatch.co.il/punch/punch2.php|timewatch_site> and check me."""

@@ -67,7 +67,7 @@ def some_func(company, username, password):
 
     # login = tw.login(args.company, args.user, args.password)
     login = tw.login(company, username, password)
-    if login == "Login failed!":
+    if login == "Login failed! - Double check your user/password and re-run the bot":
         return login
     else:
         text = tw.edit_month(year, month)

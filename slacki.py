@@ -68,7 +68,7 @@ def no(payload):
 
 @slackify.command
 def fill_time():
-    """Open a registration popup that asks for username and password. Don't enter any credentials!"""
+    """Open a registration popup that asks for username and password."""
     username_input_block = {
         "type": "input",
         "block_id": "username_block",
@@ -166,8 +166,7 @@ def register_callback():
     print("redirecting to timewatch script")
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
-    text = """Your task was received and is being processed...
-*MANDATORY* - login to <https://checkin.timewatch.co.il/punch/punch2.php|timewatch_site> and check me."""
+    text = "Your task was received and is being processed..."
     cli.chat_postMessage(channel=action['user']['id'], text=text)
 
     return ACK
@@ -184,8 +183,12 @@ def login_to_timewatch(response, action):
     password = response['password_block']['password_value']['value']
     tw_return = main_time.some_func('2391', username, password)
     cli.chat_postMessage(channel=action['user']['id'], text=tw_return)
-    text = (f"FYI, {action['user']['name']} just used your filltimebot")
-    cli.chat_postMessage(channel='U4C0Z0QKE', text=text)
+    if 'failed!' in tw_return:
+        text = (f"FYI, {action['user']['name']} just used your filltimebot with wrong password")
+        cli.chat_postMessage(channel='U4C0Z0QKE', text=text)
+    else:
+        text = (f"FYI, {action['user']['name']} just used your filltimebot succesfully.")
+        cli.chat_postMessage(channel='U4C0Z0QKE', text=text)
 
 
 if __name__ == "__main__":
