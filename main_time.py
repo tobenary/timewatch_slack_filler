@@ -1,7 +1,6 @@
 #!/usr/bin/python
-"""For TimeWatch Version 5.069"""
-# under parameters, put as below:
-# Last updated at 23/12/19
+"""For TimeWatch Version 5.069
+Last updated at 30/12/2020"""
 
 import argparse
 import datetime
@@ -23,8 +22,8 @@ def some_func(company, username, password):
     month = today.month
     verbose = 0
     override = 'incomplete'
-    starttime = '09:00'
-    daysoff = ['friday', 'saturday']
+    # starttime = '09:00'
+    # daysoff = ['friday', 'saturday']
     jitter = 10
     retries = 2
 
@@ -66,9 +65,10 @@ def some_func(company, username, password):
     # daysoff=args.daysoff)
 
     # login = tw.login(args.company, args.user, args.password)
+
     login = tw.login(company, username, password)
-    if login == "Login failed! - Double check your user/password and re-run the bot":
-        return login
+    if login == "Login failed!":
+        return "Login failed! - Double check your user/password and re-run the bot"
     else:
         text = tw.edit_month(year, month)
         print(text)
