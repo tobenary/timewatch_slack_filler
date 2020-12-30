@@ -166,7 +166,9 @@ def register_callback():
     print("redirecting to timewatch script")
     login_to_timewatch(response, action)
     # Notify user that we are handling the command, also without blocking
-    text = "Your task was received and is being processed..."
+    text = """Your task was received and is being processed...
+It should take approximately 2 minutes maximum.
+If you have not got another slack notification - please tell the creator for a bug fix."""
     cli.chat_postMessage(channel=action['user']['id'], text=text)
 
     return ACK
