@@ -19,6 +19,6 @@ slackclient==2.7.3
 slackify==1.0.0
 soupsieve==2.0.1
 tqdm==4.48.0
-urllib3==1.25.10
+urllib3==1.26.5
 Werkzeug==1.0.1
 yarl==1.4.2
