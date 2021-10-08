@@ -1,13 +1,13 @@
 # coding=utf8
 import requests
-from bs4 import BeautifulSoup as BS
-from collections import defaultdict
-from tqdm import tqdm
 import os
 import datetime
 import time
 import logging
 import random
+import re
+from bs4 import BeautifulSoup as BS
+from collections import defaultdict
 
 try:
     strtypes = (str, 'UTF-8')
@@ -27,9 +27,9 @@ class TimeWatchException(Exception):
 class TimeWatch:
     def __init__(self, loglevel=logging.WARNING, **kwargs):
         """Assigning all pre-req fields"""
-        self.site = "https://checkin.timewatch.co.il/"
+        self.site = "https://c.timewatch.co.il/"
         self.editpath = "punch/editwh3.php"
-        self.loginpath = "punch/punch2.php"
+        self.loginpath = "user/validate_user.php" # https://c.timewatch.co.il/user/validate_user.php
         self.dayspath = "punch/editwh.php"
 
         self.offdays = ['friday', 'saturday']
@@ -74,15 +74,17 @@ class TimeWatch:
         employeeid - id as internally represented by website after successful login"""
         data = {'comp': company, 'name': user, 'pw': password}
         r = self.post(self.loginpath, data, headers=None)
-        if not ("שם החברה" and "שם העובד") in r.text:  # if "The login details you entered are incorrect!" in r.text:
+        if not ("שלום" and "התנתק" ) in r.text:  # if "The login details you entered are incorrect!" in r.text:
             # raise TimeWatchException("Login failed!")
             return "Login failed!"
+        csrf_token = re.search(r'hidden name=csrf_token value="(.*)"', r.text)
         self.loggedin = True
         self.company = company
         self.user = user
         self.password = password
         self.employeeid = int(BeautifulSoup(r.text).find('input', id='ixemplee').get('value'))
         self.logger.info("successfully logged in as {} with id {}".format(self.user, self.employeeid))
+        self.csrf_token = csrf_token.group(1)
         return r
 
     def time_to_tuple(self, t):
@@ -120,8 +122,13 @@ class TimeWatch:
             current_date_duration_min = 100
 
         # Scenario 1: The duration is above 9+ hours, no need to update
-        if 9 <= current_date_duration_hour < 100 and 0 < current_date_duration_min <= 59:
-            return None  # No need to punch, already beyond 9.x hours
+        if 9 <= current_date_duration_hour < 100 and 0 <= \
+                current_date_duration_min <= 59:
+            if 10 == current_date_duration_hour and 0 <= \
+                    current_date_duration_min <= 59:
+                return None  # No need to punch, already beyond 9.x hours
+            else:
+                return None  # No need to punch, already beyond 9.x hours
 
         # Scenario 2: The duration is below 9 hours, and only one punch at the BEGINNING of the day, we need to update2.
         elif date_duration[date][2] == 'punched_no_change' and date_duration[date][4] == 'none':
@@ -178,20 +185,23 @@ class TimeWatch:
                 end = 18, 5 + jitter
         failures = 0
         while not (
-                self.edit_date_post(date, start, end, what_to_punch, start1, end1, start2, end2) and self.validate_date(
-            year, month, date, start, end, what_to_punch)):
+                self.edit_date_post(date, year, month, start, end, what_to_punch,
+                                    start1, end1, start2, end2)
+                and self.validate_date(year, month, date, start, end, what_to_punch)):
             failures += 1
             if failures >= self.retries:
                 self.logger.warning('Failed punching in {} times on {}'.format(failures, date))
                 return False
         return True
 
-    def edit_date_post(self, date, start=None, end=None, what_to_punch=None, start1=None, end1=None, start2=None,
+    def edit_date_post(self, date, year, month, start=None, end=None,
+                       what_to_punch=None, start1=None, end1=None, start2=None,
                        end2=None):
         """The actual process of "punching" / editing the page with the new data from the step before."""
         date_str = '{y}-{m}-{d}'.format(y=date.year, m=date.month, d=date.day)
         data = {'e': str(self.employeeid), 'tl': str(self.employeeid), 'c': str(self.company), 'd': str(date),
-                'nextdate': ''}
+                'nextdate': '', 'csrf_token': self.csrf_token
+                }
         start_hour, start_minute = start
         end_hour, end_minute = end
 
@@ -222,10 +232,14 @@ class TimeWatch:
                  'xmm0': str(end_minute), 'xhh0': str(end_hour)})
 
         self.session.headers = {
-            'Content-Type': "application/x-www-form-urlencoded",
-            'Referer': r"http://checkin.timewatch.co.il/punch/editwh2.php?ie={0}&e={1}&d={2}&jd={2}&tl={1}".format(
-                self.company, self.employeeid, date),
-        }
+            'Content-Type': r"application/x-www-form-urlencoded; charset=UTF-8",
+            'Referer': f"https://c.timewatch.co.il/punch/editwh.php?month="
+                       f"{month}&year={year}&teamldr={self.employeeid}&empl_name={self.company}"
+            }
+            # 'Referer': r"https://c.timewatch.co.il/punch/editwh2.php?ie={"
+            #            r"0}&e={1}&d={2}&jd={2}&tl={1}".format(
+            #     self.company, self.employeeid, date)
+        # }
         r = self.post(self.editpath, data, self.session.headers)
 
         if "TimeWatch - Reject" in r.text or "error " in r.text or u"אינך" in r.text:
@@ -254,7 +268,7 @@ class TimeWatch:
 
         dates = set()
         date_durations = defaultdict(list)
-        for tr in BeautifulSoup(r.text).findAll('tr', attrs={'class': 'tr'}):
+        for tr in BeautifulSoup(r.text).findAll('tr', attrs={'class': 'update-data'}):
             tds = tr.findAll('td')
             date = datetime.datetime.strptime(tds[0].getText().split(" ")[0], "%d-%m-%Y").date()
             cause = True if self.clean_text(tds[10].getText()) else False
@@ -281,10 +295,17 @@ class TimeWatch:
         return dates, date_durations
 
     def validate_date(self, year, month, expected_date, expected_start, expected_end, what_to_punch):
-        data = {'ee': self.employeeid, 'e': self.company, 'y': year, 'm': month}
-        r = self.get(self.dayspath, data)
+        data = {'teamldr': self.employeeid, 'empl_name': self.company, 'year': year,
+                'month': month}
+        retry = True
+        while retry:
+            r = self.get(self.dayspath, data)
+            if str(expected_date) not in r.text:
+                time.sleep(random.randint(1, 3))
+            else:
+                retry = False
 
-        for tr in BeautifulSoup(r.text).findAll('tr', attrs={'class': 'tr'}):
+        for tr in BeautifulSoup(r.text).findAll('tr', attrs={'class': 'update-data'}):
             tds = tr.findAll('td')
             date = datetime.datetime.strptime(tds[0].getText().split(" ")[0], "%d-%m-%Y").date()
             if date != expected_date:
@@ -346,21 +367,22 @@ class TimeWatch:
         dates, date_durations = (self.parse_dates(year, month, self.keep_cause))
         dates = sorted(dates)
 
-        if self.override_all:
-            self.logger.info('overwriting all entries to retrieve expected durations')
-            for date in tqdm(dates):
-                self.edit_date(year, month, date, headers=None)
+        # if self.override_all:
+        #     self.logger.info('overwriting all entries to retrieve expected durations')
+        #     for date in tqdm(dates):
+        #         self.edit_date(year, month, date, headers=None)
 
             # self.logger.info('parsing expected durations')
             # date_durations = self.parse_expected_durations(year, month)
 
-            self.logger.info('punching in')
+            # self.logger.info('punching in')
 
-        for date in tqdm(dates):
+        # for date in tqdm(dates):
+        for date in dates:
             done = self.edit_date(year, month, date, date_durations)
             if not done:
                 print(f"\nNo need punching for {date}, moving on...")
             elif done:
                 print(f"\nDone punching for {date}, moving on...")
         return """Timewatch site updated - Check your times!
-        *MANDATORY* - login to <https://checkin.timewatch.co.il/punch/punch2.php|timewatch_site> and check me."""
+        *MANDATORY* - login to <https://c.timewatch.co.il/punch/punch.php|timewatch_site> and check me."""
