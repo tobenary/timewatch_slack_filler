@@ -241,6 +241,7 @@ class TimeWatch:
             #     self.company, self.employeeid, date)
         # }
         r = self.post(self.editpath, data, self.session.headers)
+        time.sleep(random.randint(0, 10))
 
         if "TimeWatch - Reject" in r.text or "error " in r.text or u"אינך" in r.text:
             print("error")
