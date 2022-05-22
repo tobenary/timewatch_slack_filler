@@ -1,6 +1,6 @@
-aiohttp==3.7.4
+aiohttp==3.8.1
 async-timeout==3.0.1
-attrs==19.3.0
+attrs==21.4.0
 beautifulsoup4==4.9.1
 certifi==2020.6.20
 chardet==3.0.4
@@ -13,12 +13,13 @@ Jinja2==2.11.3
 MarkupSafe==1.1.1
 multidict==4.7.6
 pyee==7.0.2
-python-dotenv==0.14.0
-requests==2.24.0
-slackclient==2.7.3
+python-dotenv==0.20.0
+requests==2.27.1
+slackclient==2.9.4
 slackify==1.0.0
 soupsieve==2.0.1
 tqdm==4.48.0
 urllib3==1.26.5
 Werkzeug==1.0.1
 yarl==1.4.2
+fastapi==0.78.0

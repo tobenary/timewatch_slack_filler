@@ -59,8 +59,10 @@ def reply_to_mention(event, client, logger):
 
 
 # @app.message("hello")
-@app.message(re.compile("(hi|hello|hey|help)", flags=re.IGNORECASE))
-def reply_to_keyword(message, say, logger):
+@app.message(re.compile("^(hi|hello|hey|help)", flags=re.IGNORECASE))
+# regular expression matches are inside of context.matches
+
+def reply_to_keyword(message, say, context, logger):
     """
     Messages can be listened for, using specific words and phrases.
     message() accepts an argument of type str or re.Pattern object
@@ -80,6 +82,10 @@ def reply_to_keyword(message, say, logger):
     https://slack.dev/bolt-python/concepts#message-listening
     https://api.slack.com/messaging/retrieving
     """
+    print(context['matches'])
+    if len(context['matches']) == 0:
+        return
+
     try:
 
         blocks = [
@@ -87,7 +93,7 @@ def reply_to_keyword(message, say, logger):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Hi there! This is just a test that everything works correctly!\nI can help you with filling your missing times by typing `/fill_time` at the message bar"
+                    "text": "Hola! This is just a test that everything works correctly!\nYou can fill your missing times by typing `/fill_time` at the message bar"
                 },
                 "accessory": {
                     "type": "button",
@@ -100,7 +106,9 @@ def reply_to_keyword(message, say, logger):
                 }
             }
         ]
-        say(blocks=blocks)
+        say(text="type `fill_time`", blocks=blocks)
+        return
+
     except Exception as e:
         logger.error(f"Error responding to message keyword 'hello': {e}")
 
@@ -343,7 +351,7 @@ def login_to_timewatch(user_id, password, slack_user_id, client):
     else:
         pass
         text = f"FYI, <@{slack_user_id}> just used your filltimebot successfully."
-        client.chat_postMessage(channel='U4C0Z0QKE', text=text, link_names=True)
+        # client.chat_postMessage(channel='U4C0Z0QKE', text=text, link_names=True)
 
 
 @app.event("app_home_opened")
@@ -404,7 +412,7 @@ def publish_home_view(client, event, logger):
                 ]
             }
         )
-    
+
     except Exception as e:
         logger.error(f"Error publishing view to Home Tab: {e}")
 
@@ -424,8 +432,7 @@ api = FastAPI()
 async def endpoint(req: Request):
         return await app_handler.handle(req)
 
-# if __name__ == "__main__":
-    # app.start(5000)  # POST http://localhost:3000/slack/events
+#  if __name__ == "__main__":
+  # app.start(5000)  # POST http://localhost:3000/slack/events
 #    print("Starting the bot")
 #    app.start(port=5000)
-
