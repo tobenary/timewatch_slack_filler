@@ -1,12 +1,14 @@
 #!/usr/bin/python
 """For TimeWatch Version 5.069
-Last updated at 30/12/2020"""
+Last updated at 10/May/2023"""
 
 import argparse
 import datetime
 import logging
 
 import timewatch
+
+logger = logging.getLogger(__name__)
 
 
 def some_func(company, username, password):
@@ -68,8 +70,13 @@ def some_func(company, username, password):
 
     login = tw.login(company, username, password)
     if login == "Login failed!":
-        return "Login failed! - Double check your user/password and re-run the bot"
+        return ("*There was a problem logging in*.\nPlease check your user name and password and "
+                "retry.\nnote - There is usually no 0 at the beginning of the ID.")
     else:
         text = tw.edit_month(year, month)
-        print(text)
+        logger.info(text)
         return text
+
+
+if __name__ == '__main__':
+    some_func('2391', 'employee_number', 'employee_ID/T"Z')

@@ -1,0 +1,33 @@
+{
+  "type": "home",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "להזכירכם - זה מה שממלאים בערבי חג\nחופש על חשבון החברה "
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "image",
+      "image_url": "https://i.imgur.com/Um2jb3i.png",
+      "alt_text": "חופש על חשבון החברה"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "To start, type `/fill_time` and press enter"
+      }
+    }
+  ]
+}

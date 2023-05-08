@@ -1,0 +1,109 @@
+{
+	"type": "modal",
+	"callback_id": "Fill_Missing_Times",
+	"title": {
+		"type": "plain_text",
+		"text": "My App",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*to be replaced with dates*"
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "username_block",
+			"element": {
+				"type": "plain_text_input",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Enter your employee number (usually 3 digits)"
+				},
+				"action_id": "username_value"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "👤 Employee number",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "password_block",
+			"element": {
+				"type": "plain_text_input",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Enter your password (usually your ID)"
+				},
+				"action_id": "password_value"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "🔑 Password",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "It can take *up to 4 minutes*, you will get a slackmsg when it finishes."
+				}
+			]
+		},
+		{
+			"type": "input",
+			"element": {
+				"type": "checkboxes",
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Before submitting the form, please fill your vacation or sick dates (if any)",
+							"emoji": true
+						},
+						"value": "value-0"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "After execution, I'm obligated to check the output in the timewatch site.",
+							"emoji": true
+						},
+						"value": "value-1"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "I am responsible to verify that all the data is accurate AFTER I click Fill Missing Times.",
+							"emoji": true
+						},
+						"value": "value-2"
+					}
+				],
+				"action_id": "checkboxes-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Remarks",
+				"emoji": true
+			}
+		}
+	]
+}
