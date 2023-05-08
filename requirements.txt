@@ -1,0 +1,6 @@
+beautifulsoup4==4.12.2
+fastapi==0.95.1
+Flask==2.3.2
+python-dotenv==1.0.0
+Requests==2.30.0
+slack_bolt==1.18.0
